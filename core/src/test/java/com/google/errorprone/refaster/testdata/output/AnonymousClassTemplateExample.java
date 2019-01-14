@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.google.errorprone.refaster.testdata.output;
+package com.google.errorprone.refaster.testdata;
 
 import java.util.AbstractList;
 import java.util.Collections;
