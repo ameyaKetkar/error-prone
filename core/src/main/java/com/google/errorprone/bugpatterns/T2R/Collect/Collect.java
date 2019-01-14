@@ -105,15 +105,6 @@ public class Collect extends BugChecker implements BugChecker.CompilationUnitTre
                 .map(x -> TypeFactGraph.of(Graphs.inducedSubgraph(tfg.get(), x)))
                 .filter(e -> matchProgram(e, Migrate.mapping).isPresent()).collect(toSet());
 
-//        for(TypeFactGraph<Identification> tfg1: relevantSubTFGs) {
-//            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&");
-//            for (Identification ii : tfg1.nodes_p().collect(toList())) {
-//                System.out.println(qualifiedName(ii));
-//                System.out.println(prettyType(ii.getType()));
-//
-//            }
-//            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&");
-//        }
 
         Map<Boolean, List<TypeFactGraph<Identification>>> pvtSubTFGs = relevantSubTFGs.stream()
                 .collect(partitioningBy(EVERYTHING_PRIVATE));

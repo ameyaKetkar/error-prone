@@ -153,7 +153,6 @@ public class GenerateTFG {
             public TypeFactGraph<Identification> visitVariable(VariableTree v, Pair<VisitorState, State> s) {
                 final Identification vid = s.snd().getRootID();
                 TypeFactGraph<Identification> acc = empty;
-
                 if(variableType(matchesTypeT(allProgramsT(Migrate.mapping))).matches(v,s.fst())) {
                     acc = acc.map(addNode(vid));
                     if(ASTHelpers.getSymbol(v).getKind().equals(ElementKind.FIELD) && !v.getModifiers().getFlags().contains(Modifier.PRIVATE)){
@@ -161,6 +160,7 @@ public class GenerateTFG {
                     }
                     if (variableType(matchesTypeT(Migrate.mapping)).matches(v,s.fst()) && isSubType(ASTHelpers.getType(v), s.fst())) {
                         Identification id = getIdFromSymbol(ASTHelpers.getType(v).asElement());
+
                         acc = acc.map(addEdge(vid, id, IMPLEMENTS));
                     }
                 }
@@ -175,9 +175,6 @@ public class GenerateTFG {
                 if(methodReturns(matchesTypeT(allProgramsT(mapping))).matches(m, s.fst())
                         || methodHasParameters(AT_LEAST_ONE, matchesTypeT(allProgramsT(mapping))).matches(m, s.fst())) {
                     acc = acc.map(addNode(mid));
-                    if(mid.getName().contains("constantSize")) {
-                        System.out.println((s.snd().getRootID()));
-                    }
                     if (m.getReturnType() != null) {
                         if (methodReturns(matchesTypeT(mapping)).matches(m, s.fst()) && isSubType(ASTHelpers.getType(m.getReturnType()), s.fst())) {
                             Identification id = getIdFromSymbol(ASTHelpers.getType(m.getReturnType()).asElement());
@@ -263,9 +260,20 @@ public class GenerateTFG {
                 if(newClassHasArguments(AT_LEAST_ONE,matchesTypeT()).matches(root,p.fst())){
                     acc = acc.map(addEdge(ncid, ID(NOT_PRIVATE, MODIFIER, null, ncid), MODIFIER));
                 }
-                if(isNewClassInitOf(matchesTypeSubT(mapping)).matches(root, p.fst())){
-                    acc = acc.map(addEdge(ncid,getIdFromSymbol(ASTHelpers.getResultType(root).asElement()),IMPLEMENTS));
+
+//                if(ncid.getName().contains("ContainsValue")){
+//                    System.out.println(ncid);
+//                    System.out.println(isSubType(ASTHelpers.getResultType(root).baseType(),p.fst()));
+//                    System.out.println(isSubType(ASTHelpers.getResultType(root).asElement().type,p.fst()));
+//
+//                }
+
+                if(isNewClassInitOf(matchesTypeSubT(mapping)).matches(root, p.fst())
+                || isSubType(ASTHelpers.getResultType(root).asElement().type,p.fst())){
+                    Identification id = getIdFromSymbol(ASTHelpers.getResultType(root).asElement());
+                    acc = acc.map(addEdge(ncid,id,IMPLEMENTS));
                     acc = acc.map(addEdge(ncid, ID(NOT_PRIVATE, MODIFIER, null, ncid), MODIFIER));
+
                 }
                 return merge(acc, scanTypeDependent(p));
             }

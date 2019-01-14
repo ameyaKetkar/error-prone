@@ -18,7 +18,6 @@ import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.code.Type;
-import com.sun.tools.javac.code.Type.MethodType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,15 +59,15 @@ public class CollectMatchers {
             if(t == null)
                 return false;
             if(isAnyType) return true;
-            Type type = ASTHelpers.getType(t);
-            type = (type instanceof MethodType) ? type.getReturnType() : type;
+            Type type = ASTHelpers.getResultType((ExpressionTree) t);
+            //type = (type instanceof MethodType) ? type.getReturnType() : type;
             return  isSubType(type,s);
         }
 
     };
 
     public static <T extends Tree> Matcher<T> matchesTypeSubT(List<Program> ps){
-        return Matchers.anyOf(ps.stream().map(x -> x.getFrom()).map(subTMatcher::apply).collect(Collectors.toSet()));
+        return Matchers.anyOf(ps.stream().map(Program::getFrom).map(subTMatcher).collect(Collectors.toSet()));
     }
 
     public static Matcher<NewClassTree> isNewClassInitOf(Matcher<Tree> matcher) {

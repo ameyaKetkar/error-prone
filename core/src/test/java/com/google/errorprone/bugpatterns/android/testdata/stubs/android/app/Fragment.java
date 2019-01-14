@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package com.google.errorprone.bugpatterns.android.testdata.stubs.android.app;
+package android.app;
 
 public class Fragment {}
