@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.google.errorprone.refaster.testdata;
+package com.google.errorprone.refaster.testdata.output;
 
 /**
  * Test input for {@code AnyOfTemplate} refactoring.
