@@ -8,13 +8,16 @@ import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.getIdType;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.isVarKind;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.typeInfoMatch;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.typesMatch;
+import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.METHOD_INVOKED;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.OF_TYPE;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.OVERRIDEN_BY;
 import static com.google.errorprone.bugpatterns.T2R.common.Tree2Id.INFERRED_;
 import static com.google.errorprone.bugpatterns.T2R.common.Tree2Id.SUPER_CLAUSE;
 import static com.google.errorprone.bugpatterns.T2R.common.Tree2State2U.RECEIVER;
+import static com.google.errorprone.bugpatterns.T2R.common.Tree2State2U.RETURNS;
 import static com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph.getSuccessorWithEdge;
 import static com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph.getSuccessorsWithEdge;
+import static com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph.getSuccessorsWithEdges;
 import static com.google.errorprone.bugpatterns.T2R.common.Util.L;
 import static com.google.errorprone.bugpatterns.T2R.common.Util.Pair.P;
 import static com.sun.source.tree.Tree.Kind.LAMBDA_EXPRESSION;
@@ -49,10 +52,8 @@ import java.util.stream.Stream;
  */
 public class GenerateRefactorables {
 
-    public static List<CUs> cus =  RWProtos.readCUs();
-
-
-    public static Set<Refactorable> allRefactorables= RWProtos.readRef().stream().collect(toSet());
+    public static List<CUs> cus =  RWProtos.read("CU");
+    public static Set<Refactorable> allRefactorables= new HashSet<>(RWProtos.read("Ref"));
     public static Set<Refactorable> Refactorables;
 
     public static boolean cuPresent(String fileName){
@@ -67,7 +68,7 @@ public class GenerateRefactorables {
     }
 
     //final Identification id,
-    public static Set<Refactorable> getRefactorableTFG(final TypeFactGraph<Identification> tfg, Program p, Set<Identification> visitedNodes){
+    public static Set<Refactorable> getRefactorableTFG(final TypeFactGraph<Identification> tfg,  Program p, Set<Identification> visitedNodes){
 
         Set<Refactorable> acc = new HashSet<>();
         List<Identification> elemsOfT = tfg.nodes_p().filter(x -> typesMatch(x.getType(), p.getFrom())).collect(toList());
@@ -75,10 +76,8 @@ public class GenerateRefactorables {
 
         List<Refactorable> trsnfrmdElemsOfT = elemsOfT.stream().map(x -> applyProgram(x,p,tfg)).collect(toList());
         acc.addAll(trsnfrmdElemsOfT);
-
         List<Identification> cs = tfg.nodes_p().filter(x -> isCallSite(x,p,tfg) || getSuccessorWithEdge(tfg, x, OVERRIDEN_BY).isPresent())
                 .collect(toList());
-
         Set<Refactorable> trnsfrmdRef = cs.stream().map(x -> applyProgram(x,p,tfg)).collect(toSet());
         acc.addAll(trnsfrmdRef);
         visitedNodes.addAll(cs);
@@ -89,7 +88,7 @@ public class GenerateRefactorables {
             for (Program.ChangeType typeChng : typeChanges) {
                 Set<Identification> succ = typeChng.hasNavigateTo()
                         ? getSuccessorsWithEdge(tfg, c, typeChng.getNavigateTo()).stream().collect(Collectors.toSet())
-                        : tfg.get().successors(c).stream().filter(s -> !visitedNodes.contains(s)).collect(Collectors.toSet());
+                        : getSuccessorsWithEdges(tfg, c, L(METHOD_INVOKED,RETURNS)).stream().collect(Collectors.toSet());
                 Set<Refactorable> rs = succ.stream().map(x -> applyProgram(x, typeChng.getValue(), tfg)).collect(toSet());
                 acc.addAll(rs);
                 visitedNodes.addAll(succ);
@@ -184,10 +183,9 @@ public class GenerateRefactorables {
     }
 
     public static Optional<Pair<Identification,Program>> matchProgram(TypeFactGraph<Identification> t, List<Program> ps){
-        //Set<Identification> vars = t.nodes_p().filter(x -> isVarKind(x) || isSuperClause(x)).collect(toSet());
         for(Identification v: t.get().nodes()) {
             for (Program p : ps) {
-                if (typeInfoMatch(p.getFrom(), getIdType(v.getType()))){
+                if (typeInfoMatch(p.getFrom(), getIdType(v.getType())) || getSuccessorWithEdge(t,v,OF_TYPE).isPresent()){
                     return Optional.of(P(v,p));
                 }
             }

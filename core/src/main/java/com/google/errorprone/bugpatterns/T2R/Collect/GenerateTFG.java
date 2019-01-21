@@ -80,22 +80,16 @@ public class GenerateTFG {
     public static final String METHOD_HIERARCHY = "METHOD_HIERARCHY";
     public static final String PARAM_INDEX = "PARAMETER_INDEX:";
     public static final String ARG_INDEX = "ARGUMENT_INDEX:";
-    public static final String PARENT_LAMBDA = "PARENT_LAMBDA";
-    public static final String PARAM_LAMBDA = "PARAMETER_LAMBDA:";
     public static final String PASSED_AS_ARG_TO = "PASSED_AS_ARG_TO";
     public static final String ARG_PASSED = "ARG_PASSED";
     public static final String ASSIGNED_TO = "ASSIGNED_TO";
     public static final String ASSIGNED_AS = "ASSIGNED_AS";
-    public static final String RECURSIVE = "RECURSIVE";
     public static final String METHOD_INVOKED = "METHOD_INVOKED";
-    public static final String REFERENCE = "REFERENCE";
-    public static final String TYPE_INFO = "TYPE_INFO";
     public static final String OF_TYPE  = "OF_TYPE";
     public static final String PARENT_METHOD = "PARENT_METHOD";
     public static final String RETURNED_BY  = "RETURNED_BY";
     public static final String OVERRIDES  = "OVERRIDES";
     public static final String OVERRIDEN_BY  = "OVERRIDEN_BY";
-    public static final String CALLSITE = "CALLSITE";
     public static final String OVERRIDEN_METHOD = "OVERRIDEN_METHOD";
     public static final String MODIFIER = "MODIFIER";
     public static final String NOT_PRIVATE = "NOT_PRIVATE";
@@ -129,7 +123,7 @@ public class GenerateTFG {
         return s.substring(s.length() - 1);
     }
 
-    private static Function<MutableValueGraph<Identification,String>, MutableValueGraph<Identification,String>> addEdge(Identification f, Identification t, String relation){
+    public static Function<MutableValueGraph<Identification,String>, MutableValueGraph<Identification,String>> addEdge(Identification f, Identification t, String relation){
         Pair<String, String> edges = RELATION_TO_EDGE.get(relation);
         if(relation.contains(PARAM)) {
             edges = RELATION_TO_EDGE.get(PARAM);
@@ -241,9 +235,6 @@ public class GenerateTFG {
                 }
 
                 if ((matchesTypeT(mapping)).matches(root,s.fst())) {
-//                    if(mid.getName().contains("constantSize")) {
-//                        System.out.println((s.snd().getRootID()));
-//                    }
                     acc = acc.map(addNode(mid));
                     if (isSubType(ASTHelpers.getReturnType(root), s.fst())) {
                         Identification id = getIdFromSymbol(ASTHelpers.getType(root).asElement());
@@ -258,15 +249,9 @@ public class GenerateTFG {
                 final Identification ncid = p.snd().getRootID();
                 TypeFactGraph<Identification> acc = emptyTFG();
                 if(newClassHasArguments(AT_LEAST_ONE,matchesTypeT()).matches(root,p.fst())){
+                    acc = acc.map(addEdge(ncid,getIdFromSymbol(ASTHelpers.getSymbol(root).owner),DECLARED_IN));
                     acc = acc.map(addEdge(ncid, ID(NOT_PRIVATE, MODIFIER, null, ncid), MODIFIER));
                 }
-
-//                if(ncid.getName().contains("ContainsValue")){
-//                    System.out.println(ncid);
-//                    System.out.println(isSubType(ASTHelpers.getResultType(root).baseType(),p.fst()));
-//                    System.out.println(isSubType(ASTHelpers.getResultType(root).asElement().type,p.fst()));
-//
-//                }
 
                 if(isNewClassInitOf(matchesTypeSubT(mapping)).matches(root, p.fst())
                 || isSubType(ASTHelpers.getResultType(root).asElement().type,p.fst())){

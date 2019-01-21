@@ -4,11 +4,13 @@ package com.google.errorprone.bugpatterns.T2R.Analysis;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.ARG_INDEX;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.ARG_PASSED;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.DECLARED_IN;
+import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.METHOD_HIERARCHY;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.NOT_PRIVATE;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.OVERRIDEN_BY;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.PARAM_INDEX;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.PARENT_METHOD;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.PASSED_AS_ARG_TO;
+import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.addEdge;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.lastCharacter;
 import static com.google.errorprone.bugpatterns.T2R.common.Tree2Id.INFERRED_;
 import static com.google.errorprone.bugpatterns.T2R.common.Tree2Id.SUPER_CLAUSE;
@@ -81,6 +83,23 @@ public class Analysis {
                         .flatMap(p -> p.snd().stream()).map(z -> P(x.fst(), z))).collect(toList());
 
         return removeEdge(t.mergeMap(newEdges),mthd_param_arg);
+    }
+
+    public static TypeFactGraph<Identification> propogateAffectedByHierarchy(TypeFactGraph<Identification> tfg){
+
+        List<EndpointPair<Identification>> hierAffMthd = tfg.get().edges().parallelStream()
+                .filter(x -> tfg.get().edgeValue(x.nodeU(), x.nodeV()).map(e -> e.equals(METHOD_HIERARCHY)).orElse(false))
+                .filter(x -> x.nodeU().getKind().equals(METHOD)).collect(toList());
+        List<Function<MutableValueGraph<Identification, String>, MutableValueGraph<Identification, String>>> params = new ArrayList<>();
+        for(EndpointPair<Identification> e: hierAffMthd){
+            List<String> paramsEdges = getSuccessorsWithEdge(tfg, e.nodeU(), PARAM_INDEX).stream()
+                    .map(x -> tfg.get().edgeValue(e.nodeU(), x).get()).collect(toList());
+            params.addAll(paramsEdges.stream().map(p -> P(getSuccessorWithEdge(tfg, e.nodeU(), p).get(), getSuccessorWithEdge(tfg, e.nodeV(), p).get()))
+                    .map(x -> addEdge(x.fst(), x.snd(), METHOD_HIERARCHY))
+                    .collect(toList()));
+        }
+
+        return tfg.mergeMap(params);
     }
 
     private static TypeFactGraph<Identification> resolveLocalVariables(TypeFactGraph<Identification> t) {
