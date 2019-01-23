@@ -1,14 +1,21 @@
 package com.google.errorprone.bugpatterns.T2R.Analysis;
 
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.induceConnectedSubgraphs;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorables.getRefactorableTFG;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.induceDisconnectedSubgraphs;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.paramArgRelation;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.propogateAffectedByHierarchy;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.removeNonPvt;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.removeParentParam;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.resolveInferred;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.resolveSuperClause;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.simplifyMethods;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorables.getRefactorableTFG1;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorables.matchProgram;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.PreConditions.DO_NOT_MIGRATE;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.PreConditions.METHOD_FOUND;
 import static com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph.emptyTFG;
+import static com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph.induceGraph;
+import static com.google.errorprone.bugpatterns.T2R.common.Visualizer.prettyType;
 import static java.util.stream.Collectors.toList;
 
-import com.google.common.graph.Graphs;
 import com.google.errorprone.bugpatterns.T2R.common.Models.IdentificationOuterClass.Identification;
 import com.google.errorprone.bugpatterns.T2R.common.Models.ProgramOuterClass.Program;
 import com.google.errorprone.bugpatterns.T2R.common.Models.RefactorableOuterClass.Refactorable;
@@ -18,12 +25,10 @@ import com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph;
 import com.google.errorprone.bugpatterns.T2R.common.Util.Pair;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 
 /**
  * Created by ameya on 1/4/19.
@@ -32,47 +37,31 @@ public class SeparateAnalysis {
 
 
     public static void main(String a[]){
-        final List<TFG> tfgs = RWProtos.read("TFG");
-        if(tfgs.size()>0) {
-            System.out.println("Starting global analysis");
-            final TypeFactGraph<Identification> globalTFG =
-                    UnaryOperator.<TypeFactGraph<Identification>>identity()
-                            .andThen(Analysis::simplifyMethods)
-                            .andThen(Analysis::resolveInferred)
-                            .andThen(Analysis::paramArgRelation)
-                            .andThen(Analysis::resolveSuperClause)
-                            .andThen(Analysis::removeNonPvt)
-                            .andThen(Analysis::propogateAffectedByHierarchy)
-                            .andThen(Analysis::removeParentParam)
-                            .apply(tfgs.stream().map(TypeFactGraph::of).reduce(emptyTFG(),Analysis::merge));
+        final List<TFG> tfgss = RWProtos.read("TFG");
+        TypeFactGraph<Identification> gTFG = tfgss.stream().map(TypeFactGraph::of).reduce(Analysis::merge).orElse(emptyTFG());
+        TypeFactGraph<Identification> globalTFG =
+                removeParentParam(propogateAffectedByHierarchy(removeNonPvt(resolveSuperClause(paramArgRelation(resolveInferred(simplifyMethods(gTFG)))))));
 
-            System.out.println("Constructed a global TFG");
-
-            final List<TypeFactGraph<Identification>> globalTFGs = induceConnectedSubgraphs(globalTFG)
-                    .parallelStream()
-                    .map(x -> TypeFactGraph.of(Graphs.inducedSubgraph(globalTFG.get(), x))).filter(x -> !x.isEmpty())
-                    .filter(METHOD_FOUND)
-                    .collect(toList());
-
-            System.out.println("Induced sub-graphs :" + globalTFGs.size());
-
-            List<Set<Refactorable>> migratedTFGss = new ArrayList<>();
-            for (int i = 0; i < globalTFGs.size(); i++) {
-                TypeFactGraph<Identification> t = globalTFGs.get(i);
-                Optional<Pair<Identification, Program>> ip = matchProgram(t, Migrate.mapping);
-                if(ip.isPresent()){
-                    Set<Refactorable> rs = getRefactorableTFG(t, ip.get().snd(), new HashSet<>());
-                    if(DO_NOT_MIGRATE.test(rs)){
-                        migratedTFGss.add(rs);
-                    }
-                }
+        List<TypeFactGraph<Identification>> globalTFGs = induceDisconnectedSubgraphs(globalTFG).stream()
+                .filter(x->matchProgram(x, Migrate.mapping).isPresent())
+                .map(x -> induceGraph(globalTFG, x)).filter(x -> !x.isEmpty())
+                .filter(METHOD_FOUND)
+                .collect(toList());
+        System.out.println("TOTAL SubTFGs = " + globalTFGs.size());
+        List<Set<Refactorable>> migratedTFGss = new ArrayList<>();
+        for(int i = 0 ; i < globalTFGs.size(); i ++ ){
+            TypeFactGraph<Identification> t = globalTFGs.get(i);
+            Optional<Pair<Identification, Program>>  pp = matchProgram(t,Migrate.mapping);
+            if(pp.isPresent()){
+                System.out.println(prettyType(pp.get().snd().getFrom()));
+                Set<Refactorable> r = getRefactorableTFG1(t, new HashSet<>());
+                migratedTFGss.add(r);
             }
-            final List<Refactorable> migrate = migratedTFGss.stream()
-                    .flatMap(Collection::stream).collect(toList());
-
-            migrate.forEach(m -> RWProtos.write(m, "Ref"));
-            System.out.println(migrate.size() + " : # of Refactorables found");
         }
+        List<Refactorable> migrate = migratedTFGss.stream()
+                .filter(x -> x.stream().noneMatch(z -> z.getEditInstructionsList().stream().anyMatch(c -> c.hasCmd() && c.getCmd().getNumber()==1)))
+                .flatMap(rt -> rt.stream()).collect(toList());
+        System.out.println("Number of refactorables: " + migrate.size());
+        migrate.forEach(m -> RWProtos.write(m,"Ref"));
     }
-
 }

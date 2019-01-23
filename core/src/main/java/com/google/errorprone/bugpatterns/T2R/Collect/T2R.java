@@ -5,7 +5,7 @@ import static com.google.common.graph.Graphs.inducedSubgraph;
 import static com.google.errorprone.BugPattern.Category.JDK;
 import static com.google.errorprone.BugPattern.LinkType.CUSTOM;
 import static com.google.errorprone.BugPattern.SeverityLevel.SUGGESTION;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.induceConnectedSubgraphs;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.induceDisconnectedSubgraphs;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorables.Refactorables;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorables.allRefactorables;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorables.cuPresent;
@@ -105,7 +105,7 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
             System.out.println("TFG Created for file unit: " + getFileName(cu));
         }
 
-        final Set<TypeFactGraph<Identification>> relevantSubTFGs = induceConnectedSubgraphs(tfg).stream()
+        final Set<TypeFactGraph<Identification>> relevantSubTFGs = induceDisconnectedSubgraphs(tfg).stream()
                 .map(x -> TypeFactGraph.of(inducedSubgraph(tfg.get(), x)))
                 .filter(e -> matchProgram(e, Migrate.mapping).isPresent())
                 .collect(toSet());

@@ -1,6 +1,7 @@
 package com.google.errorprone.bugpatterns.T2R.Analysis;
 
 
+import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorables.matchProgram;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.ARG_INDEX;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.ARG_PASSED;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.DECLARED_IN;
@@ -27,8 +28,8 @@ import static java.util.stream.Collectors.toSet;
 
 import com.google.common.collect.Streams;
 import com.google.common.graph.EndpointPair;
-import com.google.common.graph.Graphs;
 import com.google.common.graph.MutableValueGraph;
+import com.google.common.graph.Traverser;
 import com.google.errorprone.bugpatterns.T2R.common.Models.IdentificationOuterClass.Identification;
 import com.google.errorprone.bugpatterns.T2R.common.Models.TypeSignatureOuterClass.TypeInfo;
 import com.google.errorprone.bugpatterns.T2R.common.Models.TypeSignatureOuterClass.TypeSignature;
@@ -36,6 +37,7 @@ import com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph;
 import com.google.errorprone.bugpatterns.T2R.common.Util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -208,16 +210,66 @@ public class Analysis {
         return resolveInferred(TypeFactGraph.mergeGraphs(gl,gr));
     }
 
-    public static List<Set<Identification>> induceConnectedSubgraphs(TypeFactGraph<Identification> tfgs) {
+//    public static List<Set<Identification>> induceDisconnectedSubgraphs(TypeFactGraph<Identification> tfgs) {
+//        List<Set<Identification>> inducedSubGraphNodes = new ArrayList<>();
+//        while (!tfgs.isEmpty()) {
+//            Identification id = tfgs.nodes_p().filter(i -> !inducedSubGraphNodes.stream().flatMap(s->s.stream()).collect(toSet()).contains(i)).findFirst().get();
+//            Set<Identification> reachables = reachableNodes(tfgs.get().asGraph(), id).parallelStream().collect(toSet());
+//            reachables.add(id);
+//            inducedSubGraphNodes.add(reachables);
+//            tfgs = removeNodes(tfgs,reachables);
+//        }
+//        return inducedSubGraphNodes.stream().filter(x -> x.size() > 1).collect(toList());
+//    }
+
+    public static List<Set<Identification>> induceDisconnectedSubgraphs(TypeFactGraph<Identification> tfgs) {
         List<Set<Identification>> inducedSubGraphNodes = new ArrayList<>();
-        List<Identification> st = new ArrayList<>(tfgs.get().nodes());
-        while (!st.isEmpty()) {
-            Identification id = st.get(0);
-            Set<Identification> reachables = Graphs.reachableNodes(tfgs.get().asGraph(), id).parallelStream().collect(toSet());
-            reachables.add(id);
-            inducedSubGraphNodes.add(reachables);
-            st.removeAll(reachables);
+        Set<Identification> visitedN = new HashSet<>();
+        for(Identification id : tfgs.get().nodes()) {
+            if(!visitedN.contains(id) && matchProgram(id,Migrate.mapping).isPresent()){
+                Set<Identification> reachables = new HashSet<>(reachables(tfgs, id));
+                reachables.add(id);
+                inducedSubGraphNodes.add(reachables);
+                visitedN.addAll(reachables);
+            }
         }
-        return inducedSubGraphNodes.stream().filter(x -> x.size() > 1).collect(toList());
+        return inducedSubGraphNodes;
     }
+
+//    public static List<Set<Identification>> induceConnectedSubgraphs1(TypeFactGraph<Identification> tfgs) {
+//        List<Set<Identification>> inducedSubGraphNodes = new ArrayList<>();
+//        List<Identification> st = new ArrayList<>(tfgs.get().nodes());
+//        Optional<Identification> oid =  st.parallelStream()
+//                .filter(n -> matchProgram(n,Migrate.mapping).isPresent()).findFirst();
+//        while (!st.isEmpty() && oid.isPresent()) {
+//                Identification id = oid.get();
+//                Set<Identification> reachables = reachables(tfgs, id);
+//                reachables.add(id);
+//                inducedSubGraphNodes.add(reachables);
+//                st.removeAll(reachables);
+//                oid = st.parallelStream().filter(x -> isVarKind(x)||x.getKind().equals(SUPER_CLAUSE))
+//                        .filter(n -> matchProgram(n,Migrate.mapping).isPresent()).findFirst();
+//
+//        }
+//        return inducedSubGraphNodes.stream().filter(x -> x.size() > 1).collect(toList());
+//    }
+
+//    public static Graph<Identification> asGraph(TypeFactGraph<Identification> tfg){
+//        MutableGraph<Identification> g = GraphBuilder.undirected().build();
+//        tfg.nodes_p().forEach(g::addNode);
+//        tfg.get().edges().stream().filter(e -> !g.hasEdgeConnecting(e.nodeU(),e.nodeV())).forEach(e -> g.putEdge(e.nodeU(),e.nodeV()));
+//        return g;
+//    }
+//
+    public static Set<Identification> reachables(TypeFactGraph<Identification> tfg, Identification i){
+        Set<Identification> reachables = new HashSet<>();
+        Iterable<Identification> x = Traverser.forGraph(tfg.get()).breadthFirst(i);
+        x.forEach(reachables::add);
+        return reachables;
+    }
+
+//
+//    public static List<TypeFactGraph<Identification>> induceDisconnected(TypeFactGraph<Identification> tfg){
+//
+//    }
 }

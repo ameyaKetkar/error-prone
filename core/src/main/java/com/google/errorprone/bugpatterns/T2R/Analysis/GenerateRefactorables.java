@@ -5,7 +5,6 @@ import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.LOCAL_VARI
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.METHOD;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.PARAMETER;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.getIdType;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.isVarKind;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.typeInfoMatch;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.typesMatch;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.METHOD_INVOKED;
@@ -87,8 +86,8 @@ public class GenerateRefactorables {
                     .map(ChangeInstruction::getChngType).collect(toList());
             for (Program.ChangeType typeChng : typeChanges) {
                 Set<Identification> succ = typeChng.hasNavigateTo()
-                        ? getSuccessorsWithEdge(tfg, c, typeChng.getNavigateTo()).stream().collect(Collectors.toSet())
-                        : getSuccessorsWithEdges(tfg, c, L(METHOD_INVOKED,RETURNS)).stream().collect(Collectors.toSet());
+                        ? getSuccessorsWithEdge(tfg, c, typeChng.getNavigateTo()).stream().filter(e -> !visitedNodes.contains(e)).collect(Collectors.toSet())
+                        : getSuccessorsWithEdges(tfg, c, L(METHOD_INVOKED,RETURNS)).stream().filter(e -> !visitedNodes.contains(e)).collect(Collectors.toSet());
                 Set<Refactorable> rs = succ.stream().map(x -> applyProgram(x, typeChng.getValue(), tfg)).collect(toSet());
                 acc.addAll(rs);
                 visitedNodes.addAll(succ);
@@ -97,6 +96,42 @@ public class GenerateRefactorables {
         return acc;
     }
 
+    public static Set<Refactorable> getRefactorableTFG1(final TypeFactGraph<Identification> tfg,  Set<Identification> visitedNodes){
+
+
+        Set<Refactorable> acc = new HashSet<>();
+
+        Set<Optional<Pair<Identification, Program>>> xx = tfg.nodes_p().map(x -> matchProgram(x, Migrate.mapping)).filter(x -> x.isPresent()).collect(toSet());
+        visitedNodes.addAll(xx.stream().map(x->x.get().fst()).collect(toSet()));
+
+        List<Refactorable> trsnfrmdElemsOfT = xx.stream().map(x -> applyProgram(x.get().fst(),x.get().snd(),tfg)).collect(toList());
+        acc.addAll(trsnfrmdElemsOfT);
+
+        Set<Optional<Pair<Identification, Program>>> csxx = tfg.nodes_p()
+                .map(x -> isCallSiteOf(x, tfg)).filter(x -> x.isPresent()).collect(toSet());
+
+        Set<Refactorable> trnsfrmdRef = csxx.stream().map(x -> applyProgram(x.get().fst(),x.get().snd(),tfg)).collect(toSet());
+        acc.addAll(trnsfrmdRef);
+        visitedNodes.addAll(csxx.stream().map(x->x.get().fst()).collect(toSet()));
+
+        for(Optional<Pair<Identification,Program>> c : csxx){
+            List<Program.ChangeType> typeChanges = getChgInstrMthd(c.get().fst(), c.get().snd()).orElse(new ArrayList<>()).stream().filter(ChangeInstruction::hasChngType)
+                    .map(ChangeInstruction::getChngType).collect(toList());
+            for (Program.ChangeType typeChng : typeChanges) {
+                Set<Identification> succ = typeChng.hasNavigateTo()
+                        ? getSuccessorsWithEdge(tfg, c.get().fst(), typeChng.getNavigateTo()).stream().filter(e -> !visitedNodes.contains(e)).collect(Collectors.toSet())
+                        : getSuccessorsWithEdges(tfg, c.get().fst(), L(METHOD_INVOKED,RETURNS)).stream().filter(e -> !visitedNodes.contains(e)).collect(Collectors.toSet());
+                Set<Refactorable> rs = succ.stream().map(x -> applyProgram(x, typeChng.getValue(), tfg)).collect(toSet());
+                acc.addAll(rs);
+                visitedNodes.addAll(succ);
+            }
+        }
+        return acc;
+    }
+
+    public static Optional<Identification> getInferredType(TypeFactGraph<Identification> tfg){
+        return tfg.nodes_p().filter(x -> x.getKind().equals(SUPER_CLAUSE)).findAny();
+    }
 
     private static Optional<List<ChangeInstruction>> getChgInstrMthd(Identification id, Program p) {
         return p.getMethodChangeList().stream().filter(m -> match(P(m.getId(), id)))
@@ -167,6 +202,31 @@ public class GenerateRefactorables {
                 || getSuccessorsWithEdge(tfg,id,RECEIVER).stream().anyMatch(rec -> getSuccessorsWithEdge(tfg,rec,OF_TYPE).size() > 0));
     }
 
+    private static Optional<Pair<Identification,Program>> isCallSiteOf(Identification id, TypeFactGraph<Identification> tfg) {
+        for(Program p : Migrate.mapping) {
+            if(id.getKind().equals(INFERRED_ + METHOD)){
+                if (typesMatch(id.getOwner().getType(), p.getFrom()))
+                    return Optional.of(P(id, p));
+                else if(getSuccessorsWithEdge(tfg,id,RECEIVER).stream().anyMatch(rec -> getSuccessorsWithEdge(tfg,rec,OF_TYPE).size() > 0)){
+                    Optional<Identification> inftyp = getInferredType(tfg);
+                    if(inftyp.isPresent() && matchProgram(inftyp.get(),Migrate.mapping).isPresent()){
+                        return Optional.of(P(id,matchProgram(inftyp.get(),Migrate.mapping).get().snd()));
+                    }
+                }
+            }
+            else if(getSuccessorWithEdge(tfg, id, OVERRIDEN_BY).isPresent()){
+                Optional<Identification> inftyp = getInferredType(tfg);
+                if(inftyp.isPresent() && matchProgram(inftyp.get(),Migrate.mapping).isPresent()){
+                    return Optional.of(P(id,matchProgram(inftyp.get(),Migrate.mapping).get().snd()));
+                }
+            }
+
+        }
+
+
+        return Optional.empty();
+    }
+
     private static boolean isDeclarationKind(Identification id) {
         return Stream.of(METHOD,LOCAL_VARIABLE,PARAMETER,FIELD,"CLASS", SUPER_CLAUSE).anyMatch(k -> k.equals(id.getKind()));
     }
@@ -193,17 +253,26 @@ public class GenerateRefactorables {
         return Optional.empty();
     }
 
-    public static Optional<Pair<Identification,Program>> matchProgram1(TypeFactGraph<Identification> t, List<Program> ps){
-        Set<Identification> vars = t.nodes_p().filter(x -> isVarKind(x)).collect(toSet());
-        for(Identification v: vars) {
+    public static Optional<Pair<Identification,Program>> matchProgram(Set<Identification> t, List<Program> ps){
+        for(Identification v: t) {
             for (Program p : ps) {
-                if (typeInfoMatch(p.getFrom(), v.getType().getTypeSign())){ //|| getSuccessorsWithEdge(t,v ,OF_TYPE).size() > 0) {
+                if (typeInfoMatch(p.getFrom(), getIdType(v.getType()))){
                     return Optional.of(P(v,p));
                 }
             }
         }
         return Optional.empty();
     }
+
+    public static Optional<Pair<Identification,Program>> matchProgram(Identification v, List<Program> ps){
+        for (Program p : ps) {
+            if (typeInfoMatch(p.getFrom(), getIdType(v.getType()))){
+                return Optional.of(P(v,p));
+            }
+            }
+        return Optional.empty();
+    }
+
 
     private static boolean match(Pair<Identification,Identification> p){
         final Identification id = p.snd();

@@ -209,7 +209,7 @@ public class TypeFactGraph<U>{
      * @param <T>
      * @return returns a graph with the elements removed
      */
-    public static <T> TypeFactGraph<T> removeNodes(TypeFactGraph<T> tfg, List<T> elements){
+    public static <T> TypeFactGraph<T> removeNodes(TypeFactGraph<T> tfg, Iterable<T> elements){
         MutableValueGraph<T,String> gr = getMutableOf(tfg);
         for(T r: elements){
             gr.removeNode(r);
@@ -280,5 +280,15 @@ public class TypeFactGraph<U>{
     public static final String NO_EDGE = "NO_EDGE";
     public Pair<String,String> getEdgeValuesBetween(U u, U v){
         return P(tfg.edgeValueOrDefault(u,v,NO_EDGE),tfg.edgeValueOrDefault(v,u,NO_EDGE));
+    }
+
+    public static TypeFactGraph<Identification> induceGraph(TypeFactGraph<Identification> tfg, Set<Identification> ns){
+        MutableValueGraph<Identification,String> gr = ValueGraphBuilder.directed().allowsSelfLoops(true).build();
+        for(Identification t: ns) {
+            for(Identification q : ns){
+                tfg.get().edgeValue(t,q).ifPresent(x -> gr.putEdgeValue(t,q,x));
+            }
+        }
+        return of(gr);
     }
 }

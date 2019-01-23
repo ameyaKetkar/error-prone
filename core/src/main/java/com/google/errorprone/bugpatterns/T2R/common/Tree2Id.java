@@ -81,7 +81,7 @@ public class Tree2Id {
 
                 @Override
                 public Identification visitMemberSelect (MemberSelectTree m, Identification p){
-                    if(ASTHelpers.getSymbol(m).getKind().equals(ElementKind.PACKAGE) || ASTHelpers.getSymbol(m).getKind().equals(ElementKind.CLASS))
+                    if(ASTHelpers.getSymbol(m).getKind().equals(ElementKind.PACKAGE))
                         return getIdFromSymbol(ASTHelpers.getSymbol(m)).toBuilder().setOwner(p).build();
                     return ID(m.getIdentifier().toString(), INFERRED_+ ASTHelpers.getSymbol(m).getKind().toString(),
                             TypeFor(ASTHelpers.getType(m)), TREE2ID.scan(m.getExpression(), p));

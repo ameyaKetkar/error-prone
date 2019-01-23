@@ -2,12 +2,6 @@ package com.google.errorprone.bugpatterns.T2R.Analysis;
 
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.METHOD;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.Analysis.typeInfoMatch;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Migrate.PDbl;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Migrate.PInt;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Migrate.PLng;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Migrate.WDbl;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Migrate.WInt;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.Migrate.WLng;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.NOT_PRIVATE;
 import static com.google.errorprone.bugpatterns.T2R.common.Tree2Id.INFERRED_;
 import static com.google.errorprone.bugpatterns.T2R.common.Tree2State2U.RECEIVER;
@@ -19,7 +13,6 @@ import com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph;
 
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class PreConditions {
 
@@ -31,8 +24,9 @@ public class PreConditions {
            x.nodes_p().filter(m -> m.getKind().equals(INFERRED_+METHOD))
                    .allMatch(m ->  getSuccessorWithEdge(x,m,RECEIVER).isPresent()
                       || m.getType().getMthdSign().getParamList().stream()
-                           .allMatch(mm -> Stream.of(WInt,PInt,WDbl,PDbl,WLng,PLng)
-                                   .anyMatch(p ->typeInfoMatch(p,mm))));
+                           .noneMatch(mm -> Migrate.from.stream()
+                                   .anyMatch(p ->typeInfoMatch(p,mm)))
+                   || m.getType().getMthdSign().getParamList().stream().noneMatch(t -> t.hasAnyType()));
 
 
 

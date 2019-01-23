@@ -53,7 +53,7 @@ public class Collect {//extends BugChecker implements BugChecker.CompilationUnit
 //
 //        System.out.println("TFG Created");
 //
-//        Set<TypeFactGraph<Identification>> relevantSubTFGs = induceConnectedSubgraphs(tfg).stream()
+//        Set<TypeFactGraph<Identification>> relevantSubTFGs = induceDisconnectedSubgraphs(tfg).stream()
 //                .map(x -> TypeFactGraph.of(Graphs.inducedSubgraph(tfg.get(), x)))
 //                .filter(e -> matchProgram(e, Migrate.mapping).isPresent()).collect(toSet());
 //
