@@ -237,6 +237,20 @@ public class Analysis {
         return inducedSubGraphNodes;
     }
 
+    public static List<Set<Identification>> induceDisconnectedSubgraphs1(TypeFactGraph<Identification> tfgs) {
+        List<Set<Identification>> inducedSubGraphNodes = new ArrayList<>();
+        Set<Identification> visitedN = new HashSet<>();
+        for(Identification id : tfgs.get().nodes()) {
+            if(!visitedN.contains(id) && (matchProgram(id,Migrate.mapping).isPresent())){
+                Set<Identification> reachables = new HashSet<>(reachables(tfgs, id));
+                reachables.add(id);
+                inducedSubGraphNodes.add(reachables);
+                visitedN.addAll(reachables);
+            }
+        }
+        return inducedSubGraphNodes;
+    }
+
 //    public static List<Set<Identification>> induceConnectedSubgraphs1(TypeFactGraph<Identification> tfgs) {
 //        List<Set<Identification>> inducedSubGraphNodes = new ArrayList<>();
 //        List<Identification> st = new ArrayList<>(tfgs.get().nodes());

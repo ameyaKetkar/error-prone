@@ -436,8 +436,6 @@ public class Migrate {
                 .setFrom(biFuncTTLng)
                 .setTo(longBiFunc)
                 .setDeclarations(editType(longBiFunc))
-//                .addMethodChange(methodChange(apply,L(asChangeInstr(editName(APPLY_AS_LONG))
-//                        ,changeType(LongTolong()))))
                 .setLambda(Identity)
                 .setIdentifiers(Identity)
                 .addNonEditableExpr(DoNotMigrate)
@@ -485,6 +483,4 @@ public class Migrate {
 
         return result;
     }
-
-///runtime-parent/runtime-core/src/main/java/com/speedment/runtime/core/internal/component/sql/SqlStreamOptimizerInfoImpl.java
 }

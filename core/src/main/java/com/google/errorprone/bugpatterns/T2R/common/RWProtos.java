@@ -54,6 +54,29 @@ public class RWProtos {
         }
     }
 
+    public static void writeRef(GeneratedMessageV3 msg, String path) {
+        String kind = "Ref";
+        String nameBin = path+kind+"Bin.txt";
+        String nameBinSize = path+kind+"BinSize.txt";
+        String name = path+kind+".txt";
+        try {
+            String t = TextFormat.printToString(msg);
+            FileOutputStream output1 = new FileOutputStream(name,true);
+            output1.write(t.getBytes(Charset.forName("UTF-8")));
+            FileOutputStream outputSize = new FileOutputStream(nameBinSize,true);
+            String size = msg.getSerializedSize() + " ";
+            outputSize.write(size.getBytes(Charset.forName("UTF-8")));
+            FileOutputStream output = new FileOutputStream(nameBin,true);
+            msg.writeTo(output);
+            output.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.  Creating a new file.");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void write(List<GeneratedMessageV3> builders, String name) {
         builders.forEach(builder-> write(builder,name));
     }
@@ -80,6 +103,30 @@ public class RWProtos {
             return read("Program", ci -> (T) Program.parseFrom(ci));
         }
         return new ArrayList<>();
+    }
+
+    public static List<TFG> readTFG(String path){
+        try {
+            String name = path + "TFG";
+            String contents = new String(Files.readAllBytes(Paths.get(name + "BinSize.txt")));
+            String[] x = contents.split(" ");
+            List<Integer> y = Arrays.asList(x).stream().map(String::trim).map(Integer::parseInt).collect(Collectors.toList());
+            InputStream is = new FileInputStream(name + "Bin.txt");
+            List<TFG> tfgs = new ArrayList<>();
+            for (Integer c : y) {
+                byte[] b = new byte[c];
+                int i = is.read(b);
+                if (i > 0) {
+                    CodedInputStream input = CodedInputStream.newInstance(b);
+                    tfgs.add(TFG.parseFrom(input));
+                }
+            }
+            return tfgs;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            System.out.println( "TFG protos could not be deserialised");
+            return new ArrayList<>();
+        }
     }
 
 

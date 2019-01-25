@@ -68,10 +68,11 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
 
     public T2R(){
         this.mappingsLoc = "Ow";
-      //  throw new RuntimeException("Location for the mapping information is not defined");
     }
+
     public T2R(ErrorProneFlags flags){
         this.mappingsLoc = flags.get("T2R:mappingLocation").orElse("");
+        RWProtos.pckgName = this.mappingsLoc;
         System.out.println(mappingsLoc);
     }
 
