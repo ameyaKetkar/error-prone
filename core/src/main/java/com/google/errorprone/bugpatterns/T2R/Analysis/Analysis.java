@@ -7,6 +7,7 @@ import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.ARG_PASS
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.DECLARED_IN;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.METHOD_HIERARCHY;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.NOT_PRIVATE;
+import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.OF_TYPE;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.OVERRIDEN_BY;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.PARAM_INDEX;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.PARENT_METHOD;
@@ -111,7 +112,10 @@ public class Analysis {
 
         final List<Pair<Identification, Identification>> replace_with = t.nodes_p().filter(x -> x.getKind().equals(LOCAL_VARIABLE))
                 .map(d -> P(d, localVariablesToResolve.stream().filter(u -> resolveLocalVariables.test(d, u)).findFirst()))
-                .filter(p -> p.snd().isPresent()).map(p -> P( p.snd().get(), p.fst())).collect(toList());
+                .filter(p -> p.snd().isPresent())
+                .map(p -> P( p.snd().get(), p.fst()))
+                .filter(e -> !e.fst().equals(e.snd()))
+                .collect(toList());
 
         return replace(t,replace_with);
     }
@@ -124,7 +128,10 @@ public class Analysis {
 
         List<Pair<Identification, Identification>> replace_with = foundClasses.stream()
                 .map(c -> P(inferredSuperclause.stream().filter(x -> x.getName().equals(c.getName()) && typesMatch(c.getType(), x.getType())).findFirst(),c))
-                .filter(x -> x.fst().isPresent()).map(x -> P(x.fst().get(), x.snd())).collect(toList());
+                .filter(x -> x.fst().isPresent())
+                .map(x -> P(x.fst().get(), x.snd()))
+                .filter(e -> !e.fst().equals(e.snd()))
+                .collect(toList());
         return replace(tfg,replace_with);
     }
 
@@ -166,7 +173,8 @@ public class Analysis {
         }
         final List<Pair<Identification,Identification>> replace_with = tfg.get().nodes().stream()
                 .filter(Analysis::isInferred).filter(x -> tfg.get().nodes().contains(makeNonInferred(x)))
-                .map(x -> P(x,makeNonInferred(x))).collect(toList());
+                .map(x -> P(x,makeNonInferred(x)))
+                .filter(e -> !e.fst().equals(e.snd())).collect(toList());
         return resolveLocalVariables(replace(tfg,replace_with));
     }
 
@@ -201,9 +209,6 @@ public class Analysis {
                 && Streams.zip(r.getOf().getTypeParameterList().stream(), t.getOf().getTypeParameterList().stream(), Analysis::typeInfoMatch).allMatch(x -> x));
     }
 
-    public static boolean typeInfoMatchWithErasure(TypeInfo r, TypeInfo t) {
-        return r.hasAnyType() || t.hasAnyType()|| (r.getOf().getInterfaceName().equals(t.getOf().getInterfaceName()));
-    }
 
     public static Identification makeNonInferred(Identification id){
         Identification.Builder i = id.toBuilder();
@@ -218,23 +223,11 @@ public class Analysis {
         return resolveInferred(TypeFactGraph.mergeGraphs(gl,gr));
     }
 
-//    public static List<Set<Identification>> induceDisconnectedSubgraphs(TypeFactGraph<Identification> tfgs) {
-//        List<Set<Identification>> inducedSubGraphNodes = new ArrayList<>();
-//        while (!tfgs.isEmpty()) {
-//            Identification id = tfgs.nodes_p().filter(i -> !inducedSubGraphNodes.stream().flatMap(s->s.stream()).collect(toSet()).contains(i)).findFirst().get();
-//            Set<Identification> reachables = reachableNodes(tfgs.get().asGraph(), id).parallelStream().collect(toSet());
-//            reachables.add(id);
-//            inducedSubGraphNodes.add(reachables);
-//            tfgs = removeNodes(tfgs,reachables);
-//        }
-//        return inducedSubGraphNodes.stream().filter(x -> x.size() > 1).collect(toList());
-//    }
-
     public static List<Set<Identification>> induceDisconnectedSubgraphs(TypeFactGraph<Identification> tfgs) {
         List<Set<Identification>> inducedSubGraphNodes = new ArrayList<>();
         Set<Identification> visitedN = new HashSet<>();
         for(Identification id : tfgs.get().nodes()) {
-            if(!visitedN.contains(id) && matchProgram(id,Migrate.mapping).isPresent()){
+            if(!visitedN.contains(id) && (matchProgram(id,Migrate.mapping).isPresent()) || getSuccessorWithEdge(tfgs,id,OF_TYPE).isPresent()){
                 Set<Identification> reachables = new HashSet<>(reachables(tfgs, id));
                 reachables.add(id);
                 inducedSubGraphNodes.add(reachables);
@@ -276,8 +269,4 @@ public class Analysis {
         return reachables;
     }
 
-//
-//    public static List<TypeFactGraph<Identification>> induceDisconnected(TypeFactGraph<Identification> tfg){
-//
-//    }
 }

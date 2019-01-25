@@ -107,11 +107,16 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
             System.out.println("TFG Created for file unit: " + getFileName(cu));
         }
 
+
         final Set<TypeFactGraph<Identification>> relevantSubTFGs = induceDisconnectedSubgraphs(tfg).stream()
                 .map(x -> induceGraph(tfg, x))
-                .filter(e -> matchProgram(e, Migrate.mapping).isPresent()
-                        || e.get().edges().stream().anyMatch(v -> e.get().edgeValue(v.nodeU(),v.nodeV()).get().equals(OF_TYPE)))
+                .filter(e -> matchProgram(e, Migrate.mapping).isPresent() ||
+                        e.get().edges().stream().map(x->e.get().edgeValue(x.nodeU(),x.nodeV()).get()).anyMatch(v -> v.equals(OF_TYPE)))
                 .collect(toSet());
+
+        if(getFileName(cu).contains("InputFileBuilder")) {
+                RWProtos.write(relevantSubTFGs.stream().map(t->t.asTFG()).collect(toSet()), "TFG1");
+        }
 
         final Map<Boolean, List<TypeFactGraph<Identification>>> arePvtSubTFGs = relevantSubTFGs.stream()
                 .collect(partitioningBy(EVERYTHING_PRIVATE));
