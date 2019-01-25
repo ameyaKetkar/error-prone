@@ -65,6 +65,7 @@ public class HasMatchingType<T extends Tree> implements Matcher<T> {
 
     boolean isSameType (Type t, VisitorState s){
         if(isAnyType) return true;
+       // if(t.getKind().equals(TypeKind.WILDCARD) || t.getKind().equals(TypeKind.TYPEVAR)) return false;
         List<Type> type_Args = getTypeArgsAsSuper(t, s.getTypeFromString(baseTypeName), s);
         return ASTHelpers.isSameType(t,s.getTypeFromString(baseTypeName),s) && matchTypeParams(typeArgs,type_Args,s);
     }

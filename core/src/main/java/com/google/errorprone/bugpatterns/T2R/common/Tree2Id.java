@@ -125,7 +125,7 @@ public class Tree2Id {
                 public Identification visitNewClass(NewClassTree c, Identification p){
                     if(c.getClassBody() == null) {
                         MethodSymbol s = ASTHelpers.getSymbol(c);
-                        return ID(getName(s),s.getKind().toString(),TypeFor(s.asType()),p);
+                        return ID(getName(s),INFERRED_+s.getKind().toString(),TypeFor(s.asType()),p);
                     }
                     return TREE2ID.scan(c.getClassBody(),p);
                 }

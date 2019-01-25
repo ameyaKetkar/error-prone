@@ -466,7 +466,8 @@ public class Migrate {
     }
 
     public static List<Program> mapping = Stream.of(funcIntIntToIntUnaryOp(),funcDblDblToDblUnaryOp(), funcIntDblToIntToDblFunc(),
-            funcTIntToToIntFunc(), funcTDblToToDblFunc(), funcLongBlnToLongPred(),funcTBlnToPred(), bifuncTTLongtoToLongBiFunc(), PredLongToLongPred(), BiConsumerTLngToObjLngConsumer(), funcIntTToIntFunc(), SupplierIntToIntSupplier()).collect(toList());
+            funcTIntToToIntFunc(), funcTDblToToDblFunc(), funcLongBlnToLongPred(),funcTBlnToPred(), bifuncTTLongtoToLongBiFunc(),
+            PredLongToLongPred(), BiConsumerTLngToObjLngConsumer(), funcIntTToIntFunc(), SupplierIntToIntSupplier()).collect(toList());
 
     public static List<TypeInfo> from = mapping.stream().map(Program::getFrom).collect(toList());
 

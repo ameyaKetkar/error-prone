@@ -134,7 +134,8 @@ public class Analysis {
     }
 
     public static TypeFactGraph<Identification> removeParentParam(TypeFactGraph<Identification> tfg){
-        List<Pair<Identification,Identification>> nonPvtNodes = tfg.get().edges().stream().filter(e -> tfg.get().edgeValue(e.nodeU(),e.nodeV()).get().equals(PARENT_METHOD))
+        List<Pair<Identification,Identification>> nonPvtNodes = tfg.get().edges().stream()
+                .filter(e -> tfg.get().edgeValue(e.nodeU(),e.nodeV()).get().equals(PARENT_METHOD))
                 .filter(e -> !getSuccessorWithEdge(tfg,e.nodeV(),OVERRIDEN_BY).isPresent())
                 .map(x -> P(x.nodeU(),x.nodeV())).collect(toList());
         return removeEdge(tfg,nonPvtNodes);
@@ -147,11 +148,14 @@ public class Analysis {
         final List<Pair<Identification, Identification>> resolvedInferredMthds = tfg.get().edges().stream()
                 .filter(e -> tfg.get().edgeValue(e.nodeU(), e.nodeV()).get().equals(DECLARED_IN))
                 .map(e -> P(e.nodeU(),e.nodeU().toBuilder().setOwner(e.nodeV()).build()))
+                .filter(e -> !e.fst().equals(e.snd()))
                 .collect(toList());
 
         TypeFactGraph<Identification> updTFG = removeNodes(tfg,tfg.get().edges().stream()
+                .filter(e -> !e.nodeU().getKind().contains("CONSTRUCTOR"))
                 .filter(e -> tfg.get().edgeValue(e.nodeU(), e.nodeV()).get().equals(DECLARED_IN))
-                .map(EndpointPair::nodeV).collect(toList()));
+                .map(EndpointPair::nodeV)
+                .collect(toList()));
 
         return replace(updTFG, resolvedInferredMthds);
     }
@@ -195,6 +199,10 @@ public class Analysis {
             return true;
         return r.hasAnyType() || (r.getOf().getInterfaceName().equals(t.getOf().getInterfaceName()) && r.getOf().getTypeParameterCount() == t.getOf().getTypeParameterCount()
                 && Streams.zip(r.getOf().getTypeParameterList().stream(), t.getOf().getTypeParameterList().stream(), Analysis::typeInfoMatch).allMatch(x -> x));
+    }
+
+    public static boolean typeInfoMatchWithErasure(TypeInfo r, TypeInfo t) {
+        return r.hasAnyType() || t.hasAnyType()|| (r.getOf().getInterfaceName().equals(t.getOf().getInterfaceName()));
     }
 
     public static Identification makeNonInferred(Identification id){

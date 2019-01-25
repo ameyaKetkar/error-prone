@@ -1,7 +1,6 @@
 package com.google.errorprone.bugpatterns.T2R.Collect;
 
 
-import static com.google.common.graph.Graphs.inducedSubgraph;
 import static com.google.errorprone.BugPattern.Category.JDK;
 import static com.google.errorprone.BugPattern.LinkType.CUSTOM;
 import static com.google.errorprone.BugPattern.SeverityLevel.SUGGESTION;
@@ -14,10 +13,13 @@ import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorabl
 import static com.google.errorprone.bugpatterns.T2R.Analysis.GenerateRefactorables.matchProgram;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.PreConditions.DO_NOT_MIGRATE;
 import static com.google.errorprone.bugpatterns.T2R.Analysis.PreConditions.EVERYTHING_PRIVATE;
-import static com.google.errorprone.bugpatterns.T2R.Analysis.PreConditions.METHOD_FOUND;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.PreConditions.NO_INFERRED_ASSIGNMENT;
+import static com.google.errorprone.bugpatterns.T2R.Analysis.PreConditions.NO_INFERRED_PASSED_AS_ARG;
+import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.OF_TYPE;
 import static com.google.errorprone.bugpatterns.T2R.Collect.GenerateTFG.TFG_CREATOR;
 import static com.google.errorprone.bugpatterns.T2R.Refactor.GenerateFix.FIX_CREATOR;
 import static com.google.errorprone.bugpatterns.T2R.common.Tree2Id.getPackageId;
+import static com.google.errorprone.bugpatterns.T2R.common.TypeFactGraph.induceGraph;
 import static com.google.errorprone.bugpatterns.T2R.common.Util.Pair.P;
 import static java.lang.Boolean.TRUE;
 import static java.util.stream.Collectors.partitioningBy;
@@ -106,17 +108,13 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
         }
 
         final Set<TypeFactGraph<Identification>> relevantSubTFGs = induceDisconnectedSubgraphs(tfg).stream()
-                .map(x -> TypeFactGraph.of(inducedSubgraph(tfg.get(), x)))
-                .filter(e -> matchProgram(e, Migrate.mapping).isPresent())
+                .map(x -> induceGraph(tfg, x))
+                .filter(e -> matchProgram(e, Migrate.mapping).isPresent()
+                        || e.get().edges().stream().anyMatch(v -> e.get().edgeValue(v.nodeU(),v.nodeV()).get().equals(OF_TYPE)))
                 .collect(toSet());
-
-        System.out.println(relevantSubTFGs.size());
 
         final Map<Boolean, List<TypeFactGraph<Identification>>> arePvtSubTFGs = relevantSubTFGs.stream()
                 .collect(partitioningBy(EVERYTHING_PRIVATE));
-
-        System.out.println(arePvtSubTFGs.get(Boolean.FALSE).size());
-        System.out.println(arePvtSubTFGs.get(Boolean.TRUE).size());
 
         final List<TypeFactGraph<Identification>> notPvtTfgs = arePvtSubTFGs.get(Boolean.FALSE);
 
@@ -133,7 +131,7 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
 
         final Map<Boolean, List<Pair<TypeFactGraph<Identification>, Set<Refactorable>>>>
                 passedPreConditions = migratedTFGs.stream()
-                .collect(partitioningBy(e -> DO_NOT_MIGRATE.test(e.snd()) && METHOD_FOUND.test(e.fst())));
+                .collect(partitioningBy(e -> DO_NOT_MIGRATE.test(e.snd()) && NO_INFERRED_ASSIGNMENT.and(NO_INFERRED_PASSED_AS_ARG).test(e.fst())));
 
         if (cus.size() == 0 ) {
             RWProtos.write(passedPreConditions.get(Boolean.FALSE).stream().map(t->t.fst().asTFG()).collect(toList()),"TFG");

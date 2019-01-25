@@ -154,7 +154,7 @@ public class GenerateTFG {
                     }
                     if (variableType(matchesTypeT(Migrate.mapping)).matches(v,s.fst()) && isSubType(ASTHelpers.getType(v), s.fst())) {
                         Identification id = getIdFromSymbol(ASTHelpers.getType(v).asElement());
-
+                        acc = acc.map(addEdge(vid, ID(NOT_PRIVATE,MODIFIER, null,vid),MODIFIER));
                         acc = acc.map(addEdge(vid, id, IMPLEMENTS));
                     }
                 }
@@ -185,6 +185,7 @@ public class GenerateTFG {
                         acc = acc.mergeMap(superMethods);
                     }
 
+
                     if (!m.getModifiers().getFlags().contains(Modifier.PRIVATE)) {
                         acc = acc.map(addEdge(mid, ID(NOT_PRIVATE, MODIFIER, null, mid), MODIFIER));
                     }
@@ -211,7 +212,10 @@ public class GenerateTFG {
 
             @Override
             public TypeFactGraph<Identification> visitParameterizedType(ParameterizedTypeTree i, Pair<VisitorState, State> s) {
-                return empty.map(addNode(s.snd().getRootID()));
+                Identification pid = s.snd().getRootID();
+                TypeFactGraph<Identification> acc = emptyTFG();
+                acc = acc.map(addEdge(pid, ID(NOT_PRIVATE, MODIFIER, null, pid), MODIFIER));
+                return acc;
             }
 
             @Override
@@ -224,7 +228,6 @@ public class GenerateTFG {
             public TypeFactGraph<Identification> visitMethodInvocation(MethodInvocationTree root, Pair<VisitorState, State> s) {
                 final Identification mid = s.snd().getRootID();
                 TypeFactGraph<Identification> acc = emptyTFG();
-               // System.out.println("**********" + s.snd().getRoot() + "       " + qualifiedName(s.snd().getRootID())     );
 
                 if(ASTHelpers.getReceiver(root)!= null
                         && !receiverOfInvocation(matchesTypeT((mapping))).matches(root,s.fst())
@@ -234,11 +237,22 @@ public class GenerateTFG {
                     acc = acc.map(addEdge(mid, ID(NOT_PRIVATE, MODIFIER, null, mid), MODIFIER));
                 }
 
+                if(ASTHelpers.getReceiver(root)== null
+                        && ((hasArguments(AT_LEAST_ONE, matchesTypeT())).matches(root,s.fst()) || matchesTypeT().matches(root,s.fst())) ){
+                    acc = acc.map(addNode(mid));
+                    MethodSymbol m = ASTHelpers.getSymbol(root);
+                    if (!m.getModifiers().contains(Modifier.PRIVATE)) {
+                        acc = acc.map(addEdge(mid, ID(NOT_PRIVATE, MODIFIER, null, mid), MODIFIER));
+                    }
+                    //acc = acc.map(addEdge(mid,getIdFromSymbol(ASTHelpers.getSymbol(root).owner),DECLARED_IN));
+                }
+
                 if ((matchesTypeT(mapping)).matches(root,s.fst())) {
                     acc = acc.map(addNode(mid));
                     if (isSubType(ASTHelpers.getReturnType(root), s.fst())) {
                         Identification id = getIdFromSymbol(ASTHelpers.getType(root).asElement());
                         acc = acc.map(addEdge(mid, id, IMPLEMENTS));
+                        acc = acc.map(addEdge(mid,getIdFromSymbol(ASTHelpers.getSymbol(root).owner),DECLARED_IN));
                     }
                 }
                 return merge(acc, scanTypeDependent(s));
@@ -258,7 +272,7 @@ public class GenerateTFG {
                     Identification id = getIdFromSymbol(ASTHelpers.getResultType(root).asElement());
                     acc = acc.map(addEdge(ncid,id,IMPLEMENTS));
                     acc = acc.map(addEdge(ncid, ID(NOT_PRIVATE, MODIFIER, null, ncid), MODIFIER));
-
+                    acc = acc.map(addEdge(ncid,getIdFromSymbol(ASTHelpers.getSymbol(root).owner),DECLARED_IN));
                 }
                 return merge(acc, scanTypeDependent(p));
             }
