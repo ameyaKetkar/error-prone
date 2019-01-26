@@ -113,7 +113,7 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
                 .collect(toSet());
 
         if(!relevantSubTFGs.isEmpty()) {
-            System.out.println("TFG Created for file unit: " + getFileName(cu));
+            System.out.println("TFG Created for compilation unit: " + getFileName(cu));
         }
 
         final Map<Boolean, List<TypeFactGraph<Identification>>> arePvtSubTFGs = relevantSubTFGs.stream()
