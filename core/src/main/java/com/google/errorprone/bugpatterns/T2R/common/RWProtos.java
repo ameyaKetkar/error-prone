@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class RWProtos {
 
-    public static String pckgName = "/Users/ameya/T2R/ProtoBuffOutput/";
+    public static String pckgName = "";
 
     public static void write(GeneratedMessageV3.Builder builder, String name) {
         write((GeneratedMessageV3) builder.build(), name);
@@ -122,7 +122,11 @@ public class RWProtos {
                 }
             }
             return tfgs;
-        } catch (Exception e) {
+        }
+        catch (FileNotFoundException e) {
+            return new ArrayList<>();
+        }
+        catch (Exception e) {
             System.out.println(e.toString());
             System.out.println( "TFG protos could not be deserialised");
             return new ArrayList<>();
@@ -148,7 +152,10 @@ public class RWProtos {
                 }
             }
             return tfgs;
-        } catch (Exception e) {
+        }catch (FileNotFoundException e) {
+            return new ArrayList<>();
+        }
+        catch (Exception e) {
             System.out.println(e.toString());
             System.out.println( "TFG protos could not be deserialised");
             return new ArrayList<>();
