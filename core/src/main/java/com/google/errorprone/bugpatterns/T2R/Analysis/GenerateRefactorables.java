@@ -56,8 +56,8 @@ public class GenerateRefactorables {
     public static Set<Refactorable> Refactorables;
 
     public static boolean cuPresent(String fileName){
-        System.out.println(cus.size());
-        if(cus.size() > 0)
+
+    if(cus.size() > 0)
             return cus.stream().anyMatch(cu -> cu.getCu().equals(fileName));
         return true;
     }

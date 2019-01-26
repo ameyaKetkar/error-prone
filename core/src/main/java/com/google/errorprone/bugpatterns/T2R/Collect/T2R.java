@@ -73,7 +73,6 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
     public T2R(ErrorProneFlags flags){
         this.mappingsLoc = flags.get("T2R:mappingLocation").orElse("");
         RWProtos.pckgName = this.mappingsLoc;
-        System.out.println(mappingsLoc);
     }
 
     @Override
@@ -104,9 +103,7 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
                 .andThen(Analysis::resolveSuperClause)
                         .apply(TFG_CREATOR(s).scan(cu.getTypeDecls(), getPackageId(cu)));
 
-        if(!tfg.isEmpty()) {
-            System.out.println("TFG Created for file unit: " + getFileName(cu));
-        }
+
 
 
         final Set<TypeFactGraph<Identification>> relevantSubTFGs = induceDisconnectedSubgraphs(tfg).stream()
@@ -115,8 +112,8 @@ public class T2R extends BugChecker implements BugChecker.CompilationUnitTreeMat
                         e.get().edges().stream().map(x->e.get().edgeValue(x.nodeU(),x.nodeV()).get()).anyMatch(v -> v.equals(OF_TYPE)))
                 .collect(toSet());
 
-        if(getFileName(cu).contains("InputFileBuilder")) {
-                RWProtos.write(relevantSubTFGs.stream().map(t->t.asTFG()).collect(toSet()), "TFG1");
+        if(!relevantSubTFGs.isEmpty()) {
+            System.out.println("TFG Created for file unit: " + getFileName(cu));
         }
 
         final Map<Boolean, List<TypeFactGraph<Identification>>> arePvtSubTFGs = relevantSubTFGs.stream()
