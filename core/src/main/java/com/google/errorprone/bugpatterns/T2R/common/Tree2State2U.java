@@ -163,6 +163,12 @@ public class Tree2State2U<U> extends TreeScanner<U, Identification> {
     public static final TreeScanner<State,Identification> TREE2STATE = new TreeScanner<State, Identification>() {
         @Override
         public State visitVariable(VariableTree root,Identification s) {
+            // Foo f = new Foo();
+            // Foo ff = getFooInstance();
+            // Foo fff = ff
+            // ff = f
+
+
             final Identification rootID = TREE2ID.scan(root, s);
             List<Pair<State, String>> typeDependents = new ArrayList<>();
             if (null != root.getInitializer() ) {
@@ -269,6 +275,11 @@ public class Tree2State2U<U> extends TreeScanner<U, Identification> {
 
         @Override
         public State visitMemberSelect (MemberSelectTree m,Identification s){
+
+            if(ASTHelpers.getSymbol(m) == null && s.getKind().equals("PACKAGE")){
+               return new State(m,s,L());
+            }
+
             if(ASTHelpers.getSymbol(m).getKind().equals(ElementKind.PACKAGE)) {
                 final Identification id = getIdFromSymbol(ASTHelpers.getSymbol(m)).toBuilder().setOwner(s).build();
                 return new State(m, id, new ArrayList<>());

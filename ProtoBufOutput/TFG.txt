@@ -1,0 +1,1579 @@
+nodes {
+  name: "after_FuncIntInt"
+  type {
+    mthdSign {
+      param {
+        of {
+          interfaceName: "java.util.function.IntUnaryOperator"
+        }
+      }
+      param {
+        of {
+          interfaceName: "java.lang.Integer"
+        }
+      }
+      returnType {
+        of {
+          interfaceName: "void"
+        }
+      }
+    }
+  }
+  owner {
+    name: "Mappings"
+    type {
+      typeSign {
+        of {
+          interfaceName: "com.T2R.Collect.Mappings"
+        }
+      }
+    }
+    owner {
+      name: "com.T2R.Collect"
+      kind: "PACKAGE"
+    }
+    kind: "CLASS"
+  }
+  kind: "METHOD"
+}
+nodes {
+  name: "p1"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.util.function.IntUnaryOperator"
+      }
+    }
+  }
+  owner {
+    name: "after_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.IntUnaryOperator"
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "PARAMETER"
+}
+nodes {
+  name: "p2"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.lang.Integer"
+      }
+    }
+  }
+  owner {
+    name: "after_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.IntUnaryOperator"
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "PARAMETER"
+}
+nodes {
+  name: "compose"
+  type {
+    mthdSign {
+      param {
+        of {
+          interfaceName: "java.util.function.IntUnaryOperator"
+        }
+      }
+      returnType {
+        of {
+          interfaceName: "java.util.function.IntUnaryOperator"
+        }
+      }
+    }
+  }
+  owner {
+    name: "x"
+    type {
+      typeSign {
+        of {
+          interfaceName: "java.util.function.IntUnaryOperator"
+        }
+      }
+    }
+    owner {
+      name: "after_FuncIntInt"
+      type {
+        mthdSign {
+          param {
+            of {
+              interfaceName: "java.util.function.IntUnaryOperator"
+            }
+          }
+          param {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          returnType {
+            of {
+              interfaceName: "void"
+            }
+          }
+        }
+      }
+      owner {
+        name: "Mappings"
+        type {
+          typeSign {
+            of {
+              interfaceName: "com.T2R.Collect.Mappings"
+            }
+          }
+        }
+        owner {
+          name: "com.T2R.Collect"
+          kind: "PACKAGE"
+        }
+        kind: "INFERRED_CLASS"
+      }
+      kind: "INFERRED_METHOD"
+    }
+    kind: "INFERRED_LOCAL_VARIABLE"
+  }
+  kind: "INFERRED_METHOD"
+}
+nodes {
+  name: "andThen"
+  type {
+    mthdSign {
+      param {
+        of {
+          interfaceName: "java.util.function.IntUnaryOperator"
+        }
+      }
+      returnType {
+        of {
+          interfaceName: "java.util.function.IntUnaryOperator"
+        }
+      }
+    }
+  }
+  owner {
+    name: "x"
+    type {
+      typeSign {
+        of {
+          interfaceName: "java.util.function.IntUnaryOperator"
+        }
+      }
+    }
+    owner {
+      name: "after_FuncIntInt"
+      type {
+        mthdSign {
+          param {
+            of {
+              interfaceName: "java.util.function.IntUnaryOperator"
+            }
+          }
+          param {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          returnType {
+            of {
+              interfaceName: "void"
+            }
+          }
+        }
+      }
+      owner {
+        name: "Mappings"
+        type {
+          typeSign {
+            of {
+              interfaceName: "com.T2R.Collect.Mappings"
+            }
+          }
+        }
+        owner {
+          name: "com.T2R.Collect"
+          kind: "PACKAGE"
+        }
+        kind: "INFERRED_CLASS"
+      }
+      kind: "INFERRED_METHOD"
+    }
+    kind: "INFERRED_LOCAL_VARIABLE"
+  }
+  kind: "INFERRED_METHOD"
+}
+nodes {
+  name: "x"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.util.function.IntUnaryOperator"
+      }
+    }
+  }
+  owner {
+    name: "after_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.IntUnaryOperator"
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "LOCAL_VARIABLE"
+}
+nodes {
+  name: "applyAsInt"
+  type {
+    mthdSign {
+      param {
+        of {
+          interfaceName: "int"
+        }
+      }
+      returnType {
+        of {
+          interfaceName: "int"
+        }
+      }
+    }
+  }
+  owner {
+    name: "x"
+    type {
+      typeSign {
+        of {
+          interfaceName: "java.util.function.IntUnaryOperator"
+        }
+      }
+    }
+    owner {
+      name: "after_FuncIntInt"
+      type {
+        mthdSign {
+          param {
+            of {
+              interfaceName: "java.util.function.IntUnaryOperator"
+            }
+          }
+          param {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          returnType {
+            of {
+              interfaceName: "void"
+            }
+          }
+        }
+      }
+      owner {
+        name: "Mappings"
+        type {
+          typeSign {
+            of {
+              interfaceName: "com.T2R.Collect.Mappings"
+            }
+          }
+        }
+        owner {
+          name: "com.T2R.Collect"
+          kind: "PACKAGE"
+        }
+        kind: "INFERRED_CLASS"
+      }
+      kind: "INFERRED_METHOD"
+    }
+    kind: "INFERRED_LOCAL_VARIABLE"
+  }
+  kind: "INFERRED_METHOD"
+}
+nodes {
+  name: "r3"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.util.function.IntUnaryOperator"
+      }
+    }
+  }
+  owner {
+    name: "after_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.IntUnaryOperator"
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "LOCAL_VARIABLE"
+}
+nodes {
+  name: "r2"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.util.function.IntUnaryOperator"
+      }
+    }
+  }
+  owner {
+    name: "after_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.IntUnaryOperator"
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "LOCAL_VARIABLE"
+}
+nodes {
+  name: "r1"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.lang.Integer"
+      }
+    }
+  }
+  owner {
+    name: "after_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.IntUnaryOperator"
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "LOCAL_VARIABLE"
+}
+nodes {
+  name: "before_FuncIntInt"
+  type {
+    mthdSign {
+      param {
+        of {
+          interfaceName: "java.util.function.Function"
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+        }
+      }
+      param {
+        of {
+          interfaceName: "java.lang.Integer"
+        }
+      }
+      returnType {
+        of {
+          interfaceName: "void"
+        }
+      }
+    }
+  }
+  owner {
+    name: "Mappings"
+    type {
+      typeSign {
+        of {
+          interfaceName: "com.T2R.Collect.Mappings"
+        }
+      }
+    }
+    owner {
+      name: "com.T2R.Collect"
+      kind: "PACKAGE"
+    }
+    kind: "CLASS"
+  }
+  kind: "METHOD"
+}
+nodes {
+  name: "p1"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.util.function.Function"
+        typeParameter {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        typeParameter {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+      }
+    }
+  }
+  owner {
+    name: "before_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.Function"
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "PARAMETER"
+}
+nodes {
+  name: "p2"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.lang.Integer"
+      }
+    }
+  }
+  owner {
+    name: "before_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.Function"
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "PARAMETER"
+}
+nodes {
+  name: "compose"
+  type {
+    mthdSign {
+      param {
+        of {
+          interfaceName: "java.util.function.Function"
+          typeParameter {
+            AnyType: "? super java.lang.Integer"
+          }
+          typeParameter {
+            AnyType: "? extends java.lang.Integer"
+          }
+        }
+      }
+      returnType {
+        of {
+          interfaceName: "java.util.function.Function"
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+        }
+      }
+    }
+  }
+  owner {
+    name: "x"
+    type {
+      typeSign {
+        of {
+          interfaceName: "java.util.function.Function"
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+        }
+      }
+    }
+    owner {
+      name: "before_FuncIntInt"
+      type {
+        mthdSign {
+          param {
+            of {
+              interfaceName: "java.util.function.Function"
+              typeParameter {
+                of {
+                  interfaceName: "java.lang.Integer"
+                }
+              }
+              typeParameter {
+                of {
+                  interfaceName: "java.lang.Integer"
+                }
+              }
+            }
+          }
+          param {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          returnType {
+            of {
+              interfaceName: "void"
+            }
+          }
+        }
+      }
+      owner {
+        name: "Mappings"
+        type {
+          typeSign {
+            of {
+              interfaceName: "com.T2R.Collect.Mappings"
+            }
+          }
+        }
+        owner {
+          name: "com.T2R.Collect"
+          kind: "PACKAGE"
+        }
+        kind: "INFERRED_CLASS"
+      }
+      kind: "INFERRED_METHOD"
+    }
+    kind: "INFERRED_LOCAL_VARIABLE"
+  }
+  kind: "INFERRED_METHOD"
+}
+nodes {
+  name: "andThen"
+  type {
+    mthdSign {
+      param {
+        of {
+          interfaceName: "java.util.function.Function"
+          typeParameter {
+            AnyType: "? super java.lang.Integer"
+          }
+          typeParameter {
+            AnyType: "? extends java.lang.Integer"
+          }
+        }
+      }
+      returnType {
+        of {
+          interfaceName: "java.util.function.Function"
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+        }
+      }
+    }
+  }
+  owner {
+    name: "x"
+    type {
+      typeSign {
+        of {
+          interfaceName: "java.util.function.Function"
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+        }
+      }
+    }
+    owner {
+      name: "before_FuncIntInt"
+      type {
+        mthdSign {
+          param {
+            of {
+              interfaceName: "java.util.function.Function"
+              typeParameter {
+                of {
+                  interfaceName: "java.lang.Integer"
+                }
+              }
+              typeParameter {
+                of {
+                  interfaceName: "java.lang.Integer"
+                }
+              }
+            }
+          }
+          param {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          returnType {
+            of {
+              interfaceName: "void"
+            }
+          }
+        }
+      }
+      owner {
+        name: "Mappings"
+        type {
+          typeSign {
+            of {
+              interfaceName: "com.T2R.Collect.Mappings"
+            }
+          }
+        }
+        owner {
+          name: "com.T2R.Collect"
+          kind: "PACKAGE"
+        }
+        kind: "INFERRED_CLASS"
+      }
+      kind: "INFERRED_METHOD"
+    }
+    kind: "INFERRED_LOCAL_VARIABLE"
+  }
+  kind: "INFERRED_METHOD"
+}
+nodes {
+  name: "x"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.util.function.Function"
+        typeParameter {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        typeParameter {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+      }
+    }
+  }
+  owner {
+    name: "before_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.Function"
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "LOCAL_VARIABLE"
+}
+nodes {
+  name: "apply"
+  type {
+    mthdSign {
+      param {
+        of {
+          interfaceName: "java.lang.Integer"
+        }
+      }
+      returnType {
+        of {
+          interfaceName: "java.lang.Integer"
+        }
+      }
+    }
+  }
+  owner {
+    name: "x"
+    type {
+      typeSign {
+        of {
+          interfaceName: "java.util.function.Function"
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          typeParameter {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+        }
+      }
+    }
+    owner {
+      name: "before_FuncIntInt"
+      type {
+        mthdSign {
+          param {
+            of {
+              interfaceName: "java.util.function.Function"
+              typeParameter {
+                of {
+                  interfaceName: "java.lang.Integer"
+                }
+              }
+              typeParameter {
+                of {
+                  interfaceName: "java.lang.Integer"
+                }
+              }
+            }
+          }
+          param {
+            of {
+              interfaceName: "java.lang.Integer"
+            }
+          }
+          returnType {
+            of {
+              interfaceName: "void"
+            }
+          }
+        }
+      }
+      owner {
+        name: "Mappings"
+        type {
+          typeSign {
+            of {
+              interfaceName: "com.T2R.Collect.Mappings"
+            }
+          }
+        }
+        owner {
+          name: "com.T2R.Collect"
+          kind: "PACKAGE"
+        }
+        kind: "INFERRED_CLASS"
+      }
+      kind: "INFERRED_METHOD"
+    }
+    kind: "INFERRED_LOCAL_VARIABLE"
+  }
+  kind: "INFERRED_METHOD"
+}
+nodes {
+  name: "r3"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.util.function.Function"
+        typeParameter {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        typeParameter {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+      }
+    }
+  }
+  owner {
+    name: "before_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.Function"
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "LOCAL_VARIABLE"
+}
+nodes {
+  name: "r2"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.util.function.Function"
+        typeParameter {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        typeParameter {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+      }
+    }
+  }
+  owner {
+    name: "before_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.Function"
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "LOCAL_VARIABLE"
+}
+nodes {
+  name: "r1"
+  type {
+    typeSign {
+      of {
+        interfaceName: "java.lang.Integer"
+      }
+    }
+  }
+  owner {
+    name: "before_FuncIntInt"
+    type {
+      mthdSign {
+        param {
+          of {
+            interfaceName: "java.util.function.Function"
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+            typeParameter {
+              of {
+                interfaceName: "java.lang.Integer"
+              }
+            }
+          }
+        }
+        param {
+          of {
+            interfaceName: "java.lang.Integer"
+          }
+        }
+        returnType {
+          of {
+            interfaceName: "void"
+          }
+        }
+      }
+    }
+    owner {
+      name: "Mappings"
+      type {
+        typeSign {
+          of {
+            interfaceName: "com.T2R.Collect.Mappings"
+          }
+        }
+      }
+      owner {
+        name: "com.T2R.Collect"
+        kind: "PACKAGE"
+      }
+      kind: "CLASS"
+    }
+    kind: "METHOD"
+  }
+  kind: "LOCAL_VARIABLE"
+}
+nodes {
+  name: "com.T2R.Collect.Mappings"
+  type {
+    mthdSign {
+      returnType {
+        of {
+          interfaceName: "void"
+        }
+      }
+    }
+  }
+  owner {
+    name: "Mappings"
+    type {
+      typeSign {
+        of {
+          interfaceName: "com.T2R.Collect.Mappings"
+        }
+      }
+    }
+    owner {
+      name: "com.T2R.Collect"
+      kind: "PACKAGE"
+    }
+    kind: "CLASS"
+  }
+  kind: "CONSTRUCTOR"
+}
+nodes {
+  name: "java.lang.Object"
+  type {
+    mthdSign {
+      returnType {
+        of {
+          interfaceName: "void"
+        }
+      }
+    }
+  }
+  owner {
+    name: "Object"
+    type {
+      typeSign {
+        of {
+          interfaceName: "java.lang.Object"
+        }
+      }
+    }
+    owner {
+      name: "java.lang"
+      kind: "PACKAGE"
+    }
+    kind: "INFERRED_CLASS"
+  }
+  kind: "INFERRED_CONSTRUCTOR"
+}
+nodes {
+  name: "Mappings"
+  type {
+    typeSign {
+      of {
+        interfaceName: "com.T2R.Collect.Mappings"
+      }
+    }
+  }
+  owner {
+    name: "com.T2R.Collect"
+    kind: "PACKAGE"
+  }
+  kind: "CLASS"
+}
+edges {
+  fst: 0
+  snd: 1
+  edgeValue: "PARAMETER_INDEX:0"
+}
+edges {
+  fst: 0
+  snd: 2
+  edgeValue: "PARAMETER_INDEX:1"
+}
+edges {
+  fst: 1
+  snd: 3
+  edgeValue: "PASSED_AS_ARG_TO"
+}
+edges {
+  fst: 1
+  snd: 0
+  edgeValue: "PARENT_METHOD"
+}
+edges {
+  fst: 1
+  snd: 4
+  edgeValue: "PASSED_AS_ARG_TO"
+}
+edges {
+  fst: 1
+  snd: 5
+  edgeValue: "ASSIGNED_TO"
+}
+edges {
+  fst: 2
+  snd: 0
+  edgeValue: "PARENT_METHOD"
+}
+edges {
+  fst: 2
+  snd: 6
+  edgeValue: "PASSED_AS_ARG_TO"
+}
+edges {
+  fst: 3
+  snd: 1
+  edgeValue: "ARGUMENT_INDEX:0"
+}
+edges {
+  fst: 3
+  snd: 7
+  edgeValue: "ASSIGNED_TO"
+}
+edges {
+  fst: 3
+  snd: 5
+  edgeValue: "RECEIVER"
+}
+edges {
+  fst: 4
+  snd: 8
+  edgeValue: "ASSIGNED_TO"
+}
+edges {
+  fst: 4
+  snd: 1
+  edgeValue: "ARGUMENT_INDEX:0"
+}
+edges {
+  fst: 4
+  snd: 5
+  edgeValue: "RECEIVER"
+}
+edges {
+  fst: 5
+  snd: 3
+  edgeValue: "METHOD_INVOKED"
+}
+edges {
+  fst: 5
+  snd: 4
+  edgeValue: "METHOD_INVOKED"
+}
+edges {
+  fst: 5
+  snd: 1
+  edgeValue: "ASSIGNED_AS"
+}
+edges {
+  fst: 5
+  snd: 6
+  edgeValue: "METHOD_INVOKED"
+}
+edges {
+  fst: 6
+  snd: 9
+  edgeValue: "ASSIGNED_TO"
+}
+edges {
+  fst: 6
+  snd: 2
+  edgeValue: "ARGUMENT_INDEX:0"
+}
+edges {
+  fst: 6
+  snd: 5
+  edgeValue: "RECEIVER"
+}
+edges {
+  fst: 7
+  snd: 3
+  edgeValue: "ASSIGNED_AS"
+}
+edges {
+  fst: 8
+  snd: 4
+  edgeValue: "ASSIGNED_AS"
+}
+edges {
+  fst: 9
+  snd: 6
+  edgeValue: "ASSIGNED_AS"
+}
+edges {
+  fst: 10
+  snd: 11
+  edgeValue: "PARAMETER_INDEX:0"
+}
+edges {
+  fst: 10
+  snd: 12
+  edgeValue: "PARAMETER_INDEX:1"
+}
+edges {
+  fst: 11
+  snd: 13
+  edgeValue: "PASSED_AS_ARG_TO"
+}
+edges {
+  fst: 11
+  snd: 10
+  edgeValue: "PARENT_METHOD"
+}
+edges {
+  fst: 11
+  snd: 14
+  edgeValue: "PASSED_AS_ARG_TO"
+}
+edges {
+  fst: 11
+  snd: 15
+  edgeValue: "ASSIGNED_TO"
+}
+edges {
+  fst: 12
+  snd: 10
+  edgeValue: "PARENT_METHOD"
+}
+edges {
+  fst: 12
+  snd: 16
+  edgeValue: "PASSED_AS_ARG_TO"
+}
+edges {
+  fst: 13
+  snd: 17
+  edgeValue: "ASSIGNED_TO"
+}
+edges {
+  fst: 13
+  snd: 15
+  edgeValue: "RECEIVER"
+}
+edges {
+  fst: 13
+  snd: 11
+  edgeValue: "ARGUMENT_INDEX:0"
+}
+edges {
+  fst: 14
+  snd: 15
+  edgeValue: "RECEIVER"
+}
+edges {
+  fst: 14
+  snd: 11
+  edgeValue: "ARGUMENT_INDEX:0"
+}
+edges {
+  fst: 14
+  snd: 18
+  edgeValue: "ASSIGNED_TO"
+}
+edges {
+  fst: 15
+  snd: 13
+  edgeValue: "METHOD_INVOKED"
+}
+edges {
+  fst: 15
+  snd: 14
+  edgeValue: "METHOD_INVOKED"
+}
+edges {
+  fst: 15
+  snd: 11
+  edgeValue: "ASSIGNED_AS"
+}
+edges {
+  fst: 15
+  snd: 16
+  edgeValue: "METHOD_INVOKED"
+}
+edges {
+  fst: 16
+  snd: 15
+  edgeValue: "RECEIVER"
+}
+edges {
+  fst: 16
+  snd: 19
+  edgeValue: "ASSIGNED_TO"
+}
+edges {
+  fst: 16
+  snd: 12
+  edgeValue: "ARGUMENT_INDEX:0"
+}
+edges {
+  fst: 17
+  snd: 13
+  edgeValue: "ASSIGNED_AS"
+}
+edges {
+  fst: 18
+  snd: 14
+  edgeValue: "ASSIGNED_AS"
+}
+edges {
+  fst: 19
+  snd: 16
+  edgeValue: "ASSIGNED_AS"
+}

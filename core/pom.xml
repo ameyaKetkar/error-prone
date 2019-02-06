@@ -329,6 +329,11 @@
       <version>3.9.0</version>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>guru.nidi</groupId>
+          <artifactId>graphviz-java</artifactId>
+          <version>0.8.0</version>
+      </dependency>
   </dependencies>
 
   <build>

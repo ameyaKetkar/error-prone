@@ -1,32 +1,50 @@
 package com.google.errorprone.bugpatterns.T2R.common;
 
+import static com.google.errorprone.bugpatterns.T2R.common.Util.Pair.P;
+import static guru.nidi.graphviz.model.Factory.graph;
+import static guru.nidi.graphviz.model.Factory.node;
+import static guru.nidi.graphviz.model.Factory.to;
+import static java.util.stream.Collectors.toList;
+
 import com.google.errorprone.bugpatterns.T2R.common.Models.EditInstructionOuterClass.EditInstruction;
 import com.google.errorprone.bugpatterns.T2R.common.Models.IdentificationOuterClass.Identification;
+import com.google.errorprone.bugpatterns.T2R.common.Models.TFGOuterClass.TFG;
+import com.google.errorprone.bugpatterns.T2R.common.Models.TFGOuterClass.TFG.Edge;
 import com.google.errorprone.bugpatterns.T2R.common.Models.TypeSignatureOuterClass.TypeInfo;
 import com.google.errorprone.bugpatterns.T2R.common.Models.TypeSignatureOuterClass.TypeSignature;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Link;
+import guru.nidi.graphviz.model.Node;
 
 /**
  * Created by A on 12/17/18.
  */
 public class Visualizer {
 
-//    public static void visualizeGraph(String fileName, List<TFG> tfg) {
-//
-//        for(int i = 0; i < tfg.size(); i++) {
-//            final List<Node> ns = generateEdge(tfg.get(i));
-//            Node[] t = ns.toArray(new Node[ns.size()]);
-//            Graph g = graph().directed().with(t);
-//            try {
-//                Graphviz.fromGraph(g).height(200).width(100).render(Format.SVG).toFile(new File("/Users/ameya/" + fileName + i +".svg"));
-//            } catch (IOException e) {
-//                System.out.println(e.toString());
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    public static void visualizeGraph(String fileName, List<TFG> tfg) {
+
+        for(int i = 0; i < tfg.size(); i++) {
+            final List<Node> ns = generateEdge(tfg.get(i));
+            Node[] t = ns.toArray(new Node[ns.size()]);
+            Graph g = graph().directed().with(t);
+            try {
+                Graphviz.fromGraph(g).height(200).width(100).render(Format.SVG).toFile(new File("/Users/ameya/" + fileName + i +".svg"));
+            } catch (IOException e) {
+                System.out.println(e.toString());
+                e.printStackTrace();
+            }
+        }
+    }
 //
 //    public static void visualizeGraphR(String fileName, List<TFGRefactorable> tfg) {
 //
@@ -43,11 +61,11 @@ public class Visualizer {
 //        }
 //    }
 
-//    private static Node getNode(Identification id){
-//        if(!id.hasOwner())
-//            return  node(id.getName() + "\n" + id.getKind());
-//        return node(id.getName() + "\n" + id.getKind() + "\n" + prettyType(id.getType()) + "\n" + qualifiedName(id)+ "\n"+  id.getOwner().hashCode());
-//    }
+    private static Node getNode(Identification id){
+        if(!id.hasOwner())
+            return  node(id.getName() + "\n" + id.getKind());
+        return node(id.getName() + "\n" + id.getKind() + "\n" + prettyType(id.getType()) + "\n" + qualifiedName(id)+ "\n"+  id.getOwner().hashCode());
+    }
 //
 //    private static Node getNode(Refactorable r){
 //        if(!r.getId().hasOwner())
@@ -101,14 +119,14 @@ public class Visualizer {
     }
 
 
-//    private static List<Node> generateEdge(TFG tfg){
-//        final List<Identification> ns = tfg.getNodesList();
-//        final Map<Integer, List<Edge>> g = tfg.getEdgesList().stream().collect(Collectors.groupingBy(x -> x.getFst()));
-//        return g.entrySet().stream()
-//                .map(e -> P(getNode(ns.get(e.getKey())),
-//                        e.getValue().stream().map(x -> to(getNode(ns.get(x.getSnd()))).with(Label.of(x.getEdgeValue()))).collect(toList())))
-//                .map(p -> p.fst().link(p.snd().toArray(new Link[p.snd().size()]))).collect(toList());
-//    }
+    private static List<Node> generateEdge(TFG tfg){
+        final List<Identification> ns = tfg.getNodesList();
+        final Map<Integer, List<Edge>> g = tfg.getEdgesList().stream().collect(Collectors.groupingBy(x -> x.getFst()));
+        return g.entrySet().stream()
+                .map(e -> P(getNode(ns.get(e.getKey())),
+                        e.getValue().stream().map(x -> to(getNode(ns.get(x.getSnd()))).with(Label.of(x.getEdgeValue()))).collect(toList())))
+                .map(p -> p.fst().link(p.snd().toArray(new Link[p.snd().size()]))).collect(toList());
+    }
 //
 //    private static List<Node> generateEdge(TFGRefactorable tfg){
 //        final List<Refactorable> ns = tfg.getNodesList();
