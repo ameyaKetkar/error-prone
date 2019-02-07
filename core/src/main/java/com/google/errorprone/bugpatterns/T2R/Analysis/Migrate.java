@@ -47,7 +47,7 @@ public class Migrate {
         return ChangeInstruction.newBuilder().setChngType(ChangeType.newBuilder().setValue(p).setNavigateTo(navigateTo)).build();
     }
 
-    private static EditInstruction editType(TypeInfo p){
+    public static EditInstruction editType(TypeInfo p){
         return EditInstruction.newBuilder().setEditType(p).build();
     }
 
