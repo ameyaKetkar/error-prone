@@ -29,6 +29,8 @@ import java.util.stream.Stream;
  * Created by ameya on 12/13/18.
  */
 public class Migrate {
+
+
     private static TypeSignature methodSign(TypeInfo ret, List<TypeInfo> ps){
         return ps.size() > 0 ? TypeSignature.newBuilder().setMthdSign(MethodSign.newBuilder().setReturnType(ret).addAllParam(ps)).build()
                 :TypeSignature.newBuilder().setMthdSign(MethodSign.newBuilder().setReturnType(ret)).build();
@@ -101,6 +103,7 @@ public class Migrate {
     public static final String APPLY_AS_INT = "applyAsInt";
     public static final String TEST = "test";
 
+
     public static ChangeInstruction asChangeInstr(EditInstruction e){
         return ChangeInstruction.newBuilder().setEditInstr(e).build();
     }
@@ -147,6 +150,18 @@ public class Migrate {
                 .setDeclarations(editType(PBln))
                 .setIdentifiers(Identity)
                 .addNonEditableExpr(Identity)
+                .build();
+    }
+
+    private static TypeInfo JSON = type("org.json.simple.JSONObject", L());
+    private static TypeInfo Json = type("com.google.gson.JsonObject", L());
+
+    private static Program JSONtoJson(){
+        Identification put = Identification.newBuilder().setName("put").setType(methodSign(ANY,L(ANY,ANY))).setKind(METHOD).build();
+        return Program.newBuilder()
+                .setFrom(JSON).setTo(Json)
+                .setDeclarations(editType(Json))
+                .addMethodChange(methodChange(put,L(asChangeInstr(editName("addProperty")))))
                 .build();
     }
 
@@ -465,7 +480,7 @@ public class Migrate {
 
     public static List<Program> mapping = Stream.of(funcIntIntToIntUnaryOp(),funcDblDblToDblUnaryOp(), funcIntDblToIntToDblFunc(),
             funcTIntToToIntFunc(), funcTDblToToDblFunc(), funcLongBlnToLongPred(),funcTBlnToPred(), bifuncTTLongtoToLongBiFunc(),
-            PredLongToLongPred(), BiConsumerTLngToObjLngConsumer(), funcIntTToIntFunc(), SupplierIntToIntSupplier()).collect(toList());
+            PredLongToLongPred(), BiConsumerTLngToObjLngConsumer(), funcIntTToIntFunc(), SupplierIntToIntSupplier(), JSONtoJson()).collect(toList());
 
     public static List<TypeInfo> from = mapping.stream().map(Program::getFrom).collect(toList());
 
