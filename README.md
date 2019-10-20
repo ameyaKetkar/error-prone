@@ -62,4 +62,19 @@ Note that T2R’s approach needs to build the source code twice, once for the co
 
 Further, we realized that it would require a lot of time to evaluate T2R upon the larger projects included in this artifact (i.e., neo4j, presto and sonarqube). Consequently, the included scripts execute T2R only upon particular sub-projects of these large projects where we found more interesting migration opportunities For CoreNLP, we have set up the scripts to run T2R on the entire project.
 
+## DIY
+
+# Steps to install T2R
+ Checkout https://github.com/ameyaKetkar/error-prone.git locally. 
+ Build the project quickly with this command: `mvn package -DskipTests`
+ Checkout the evaluation artifacts: 
+* [CoreNLP](https://github.com/ameyaKetkar/CoreNLP.git) and switch to branch - T2Revaluate
+* [presto](https://github.com/ameyaKetkar/presto.git) and switch to branch T2REvaluation
+* [neo4j](https://github.com/ameyaKetkar/neo4j.git) and switch to branch  T2REvaluation
+* [java-design-patterns](https://github.com/ameyaKetkar/java-design-patterns.git) and switch to branch T2Reval
+* [sonarqube](https://github.com/ameyaKetkar/SonarqubeICSEEvaluation.git) 
+* [speedment](https://github.com/ameyaKetkar/SpeedmentICSEEvaluation.git)
+* or any other project of your choice. 
+To evaluate T2R on the chosen projects, one should fix the paths in the project’s `pom.xml`, so that error-prone (for which T2R is a plug-in) can be run during the project’s build lifecycle. You can refer [here](https://github.com/ameyaKetkar/neo4j/blob/e4248fa94eabcccca2bf2583749560e5bfbc450f/pom.xml#L833) for an example. Also, make sure to use the correct version of Maven and Java, depending on the project being evaluated. For more details on how to integrate a project’s build system with error-prone, refer [here](https://errorprone.info/docs/installation).
+
   
