@@ -64,7 +64,7 @@ Further, we realized that it would require a lot of time to evaluate T2R upon th
 
 ## DIY
 
-# Steps to install T2R
+### Steps to install T2R
  Checkout https://github.com/ameyaKetkar/error-prone.git locally. 
  Build the project quickly with this command: `mvn package -DskipTests`
  Checkout the evaluation artifacts: 
