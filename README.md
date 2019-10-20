@@ -3,6 +3,7 @@
 * This is a fork of error-prone which contains the T2R project. 
 * T2R is a type migration tool build on top of the Google’s error-prone project.
 * This artifact consists of the open source version of the tool and a subset of the open-source projects used in the evaluation (see the Notes section at the end of this document). We have readily installed T2R on a Linux VM and included the evaluation subjects for the user’s convenience. 
+* [Results](https://ameyaketkar.github.io/T2RResults.html)
 
 ## T2R Demo
 
